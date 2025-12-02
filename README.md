@@ -7,6 +7,7 @@ This project is an **Automated Outreach Workflow** designed to streamline outrea
 - **New entries in Google Sheets**  
 
 Once triggered, the workflow can perform actions such as sending emails, WhatsApp messages, or integrating with other tools via API.
+![Workflow Screenshot](Screenshot_2-12-2025_20222_localhost.jpeg)
 
 ---
 
