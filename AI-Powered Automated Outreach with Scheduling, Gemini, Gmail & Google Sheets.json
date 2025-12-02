@@ -1,0 +1,686 @@
+{
+  "name": "AI-Powered Automated Outreach with Scheduling, Gemini, Gmail & Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.website }}",
+        "responseFormat": "string",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "9ad90cee-d408-499f-85ff-64aa79e277fb",
+      "name": "HTTP Request: Get Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1344,
+        344
+      ],
+      "typeVersion": 2,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Lead lists",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "48ff2089-8431-4d01-befa-28257e10492e",
+      "name": "Get row(s) in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        672,
+        440
+      ],
+      "typeVersion": 4.6,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lJxgKysQ4FVHpDPD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1LYaFs-SpNwbLfcyQx8BvAwhjDQw2KCk0rLhy2gAkjo0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LYaFs-SpNwbLfcyQx8BvAwhjDQw2KCk0rLhy2gAkjo0/edit?usp=drivesdk",
+          "cachedResultName": "Lead Lists"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xx5Zi4Of1SYZNGOC7DvZ6Uz-LBS6DK0zGhSe_1cHaSk/edit#gid=0",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "value": {
+            "id": "={{ $json.id }}",
+            "status": "INVALID_EMAIL"
+          },
+          "schema": [
+            {
+              "id": "id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "id",
+              "defaultMatch": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "first_name",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "first_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_name",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "last_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company_name",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "company_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "email",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "website",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "website",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "status",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "readOnly": true,
+              "required": false,
+              "displayName": "row_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a0ec6aac-404b-49f6-990e-da5dcf43ae2e",
+      "name": "Update row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1344,
+        536
+      ],
+      "typeVersion": 4.6,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ve0c462c9AQjW1jL",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validate E-mail with regex').first().json.email }}",
+        "subject": "={{ $json.subject }}\n",
+        "emailType": "text",
+        "message": "={{ $json.greeting }}\n\n{{ $json.opening_line }}\n\n{{ $json.main_body }}\n\n{{ $json.ending }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "53e4114f-d6d7-4c2d-8f51-d90a17627569",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        2368,
+        344
+      ],
+      "webhookId": "1ab4365c-b378-47c6-b172-f03af1bb8c9e",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f2oU4kj9EDTyIbGP",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "d385e620-e133-4b96-b4e5-f76f7a02671c",
+      "name": "Wait (We have rate limit)",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        1120,
+        536
+      ],
+      "webhookId": "8f13e65a-f13e-44c7-9d57-aec213dd8c19",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a3854e94-9fae-423e-85fe-d088de445f30",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        1864,
+        568
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CvDSj4yKPqOJfLu0",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a personalized professionally well formatted initial cold outreach message for a potential B2B lead. Use the lead’s company website to identify what they do and craft a compelling opening line that shows genuine interest. Then follow with a brief message introducing our solution, highlighting how it aligns with their business goals, and ends with a soft CTA (call to action). The tone should be professional yet friendly, optimized for high response rates. Return the subject line, opening sentence, and main body in plain text. Make sure the mail is short under 120 words at max. Always ends you email with this \"Looking forward to hearing from you!\"\n\nUse these information:\nLeads:\nfirst_Name:\ncompany_name:\nwebsite_url: \nwebsite_content: {{ $json.cleanedData }}\n\nOur Company:\ncompany_name: XYZ Inc,\nour_solution: We provide employee managament solution at scale.\n\n\nMust Follow Instrcutions:\nYou must always respond in the following JSON format or else i will be fired.\n\n{  \"subject\": \"...\", \n\"greeting\":\"...\" \n\"opening_line\": \"...\", \n\"main_body\": \"...\" \n\"ending\":\"...\"}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Generate a personalized initial cold outreach message for a potential B2B lead. Use the lead’s company website to identify what they do and craft a compelling opening line that shows genuine interest. Then follow with a brief message introducing our solution, highlighting how it aligns with their business goals, and ends with a soft CTA (call to action). The tone should be professional yet friendly, optimized for high response rates. Return the subject line, opening sentence, and main body in plain text. Make sure the mail is short under 120 words at max. Always ends you email with this \"Looking forward to hearing from you!\"  Use these information: Leads: first_Name:{{ $('Validate E-mail with regex').item.json['first name'] }} coompany_bame:{{ $('Validate E-mail with regex').item.json.email }} website_url: {{ $('Validate E-mail with regex').item.json.website }} website_content: {{ $json.cleanedData }}  Our Company: company_name: XYZ Inc, our_solution: We provide employee managament solution at scale.   Must Follow Instrcutions: You must always respond in the following JSON format or else i will be fired.  {  \"subject\": \"...\",  \"greeting\":\"...\"  \"opening_line\": \"...\",  \"main_body\": \"...\"  \"ending\":\"...\"}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "730b5d50-9160-4393-8ba7-44d6846ad6d4",
+      "name": "Outreach Prompt",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1792,
+        344
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field 'cleanedData' with HTML removed from 'data'\nfor (const item of $input.all()) {\n  const html = item.json.data || '';\n  // Remove all HTML tags but keep text content\n  const cleaned = html.replace(/<[^>]*>/g, '').trim();\n  item.json.cleanedData = cleaned;\n}\n\n// Return all items with the new field added\nreturn $input.all();\n"
+      },
+      "id": "d0bb321c-7e59-4daf-8ba5-f4d0633396d6",
+      "name": "Clean Data",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1568,
+        256
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "844ae7ce-d7ad-4742-9e88-8a73ec5abd59",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              },
+              "leftValue": "={{ $json.email }}",
+              "rightValue": ""
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "3eab20a8-365f-431f-a744-33a47388e0b0",
+      "name": "Validate E-mail with regex",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        896,
+        440
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawText = $input.first().json.text || \"\";\n\ntry {\n  // Match JSON content between ```json and ```\n  const jsonMatch = rawText.match(/```json\\s*([\\s\\S]+?)\\s*```/i);\n\n  if (!jsonMatch || !jsonMatch[1]) {\n    throw new Error(\"No valid JSON block found in input.\");\n  }\n\n  const jsonString = jsonMatch[1].trim();\n\n  // Safely parse JSON\n  const parsedJson = JSON.parse(jsonString);\n\n  return [{ json: parsedJson }];\n} catch (error) {\n  return [{\n    json: {\n      error: \"Failed to parse JSON\",\n      details: error.message,\n    },\n  }];\n}\n"
+      },
+      "id": "e928071a-2a80-43d6-8c35-c9f580361bb4",
+      "name": "Parse Json",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2144,
+        344
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "- Import the workflow into your n8n instance.\n- Connect your Google Sheets and Gmail accounts.\n- Set up your leads using the provided spreadsheet template.\n- Get your Gemini API key and add it to n8n credentials.\n- Adjust the Schedule Trigger to control when emails are sent.\n- Customize the email prompts for your outreach tone.\n- Set rate limits to comply with Gmail policies.\n- Enable the workflow to start automated outreach.\n- Track replies and update lead status in Google Sheets.\n",
+        "height": 260,
+        "width": 472
+      },
+      "id": "34b2951f-e2e8-494c-9bfb-41ee7bb04fe2",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        224,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Lead lists",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        224,
+        288
+      ],
+      "id": "623c044c-7963-4143-bf29-ccc1ad8a26b1",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "UCK93jsonmNJYR1K",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// clean url \nlet url = $input.first().json.website  || '';\nurl = url.trim(); //removing spaces\nif (!url.startsWith(\"http://\") && !url.startsWith(\"https://\")){\n  url = \"https://\" + url;\n}\n\n// Return all urls clean\nreturn { website: url };\n"
+      },
+      "id": "21dd68a7-9b8d-4e20-b2b9-c2b419492859",
+      "name": "Clean URl",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1120,
+        344
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## Ai-Powered Automated Outreach\n\n",
+        "height": 80,
+        "width": 400,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1424,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "15f5ef82-98ab-402b-b82b-e0a609a4bf47",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE",
+          "mode": "list",
+          "cachedResultName": "Lead Lists",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Lead lists",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ltAdlnBEj-SJrNtKBgH8a0CO8j8MAFio3Mh7iXKJaIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "first name": "={{ $json['first name'] }}",
+            "email": "={{ $json.email }}",
+            "company name": "={{ $json['company name'] }}",
+            "website": "={{ $json.website }}",
+            "last name": "={{ $json['last name'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "first name",
+              "displayName": "first name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last name",
+              "displayName": "last name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company name",
+              "displayName": "company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        440
+      ],
+      "id": "ac694736-6d66-4a52-a047-23fe5ad7cd4e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lJxgKysQ4FVHpDPD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Form1",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "first name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "last name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "website",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "company name",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        440
+      ],
+      "id": "b49ae584-5441-48bf-9745-9b72b9c32444",
+      "name": "On form submission",
+      "webhookId": "f2a8d8c5-9de8-4655-9d56-84569c773701"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Clean Data": {
+      "main": [
+        [
+          {
+            "node": "Outreach Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Json": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outreach Prompt": {
+      "main": [
+        [
+          {
+            "node": "Parse Json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Validate E-mail with regex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Outreach Prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Get Website": {
+      "main": [
+        [
+          {
+            "node": "Clean Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Outreach Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait (We have rate limit)": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate E-mail with regex": {
+      "main": [
+        [
+          {
+            "node": "Clean URl",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait (We have rate limit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Clean URl": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: Get Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "356dac3a-33de-4c16-a51d-156b1e93b1a9",
+  "meta": {
+    "templateId": "5479",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ad2fab6a79e94953d50b5fc2834446143b82f2a21be8228abaded3112ceb52de"
+  },
+  "id": "gfnsIu75Q77jB68N",
+  "tags": []
+}
